@@ -12,6 +12,7 @@ def runcheck(url):
     dnsresolve = 0
     serverconnected = 0
     servercities = ""
+    resolvedto = ""
 
     for server in servers:
         serverstried += 1
@@ -22,12 +23,14 @@ def runcheck(url):
             response = urllib2.urlopen(request)
             page = response.read()
             j = json.loads(page)
+            print j
             if j:
                 servercities += " "+j['city']+", "+j['country']+"."
                 serverconnected += 1
                 if j['http'] == 200:
                     httpup += 1
-                if j['dns'] == True:
+                if j['resolved'] == True:
+                    resolvedto += str(j['dns'])+" "
                     dnsresolve += 1
         except:
              pass
@@ -39,7 +42,7 @@ def runcheck(url):
     response = ""
     response += "Hello! I\'m the IsItUpBot!\n\nResults:"
     response +="\n\nOf the "+serverstried+" servers tried, I connected to "+serverconnected+". They were located in: "+servercities
-    response += "\n\n"+dnsresolve+"/"+serverconnected+" servers indicated "+url+" resolved with DNS"
+    response += "\n\n"+dnsresolve+"/"+serverconnected+" servers indicated "+url+" resolved with DNS: "+resolvedto
     response += "\n\n"+httpup+"/"+serverconnected+" servers indicated "+url+" is up."
     response += "\n\n"+footerGen(mention.permalink)
     return response
