@@ -32,7 +32,8 @@ def runcheck(url):
                 if j['http'] == 200:
                     httpup += 1
                 if j['resolved'] == True:
-                    resolvedto += str(j['dns'])+" "
+                    if str(j['dns']) not in resolvedto:
+                        resolvedto += str(j['dns'])+" "
                     dnsresolve += 1
         except:
              pass
