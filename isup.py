@@ -11,6 +11,7 @@ def runcheck(url):
     httpup = 0
     dnsresolve = 0
     serverconnected = 0
+    serverids = ""
     servercities = ""
     resolvedto = ""
 
@@ -26,6 +27,7 @@ def runcheck(url):
             print j
             if j:
                 servercities += " "+j['city']+", "+j['country']+"."
+                serverids += "^"+str(j['serverid'])+" "
                 serverconnected += 1
                 if j['http'] == 200:
                     httpup += 1
@@ -44,11 +46,11 @@ def runcheck(url):
     response +="\n\nOf the "+serverstried+" servers tried, I connected to "+serverconnected+". They were located in: "+servercities
     response += "\n\n"+dnsresolve+"/"+serverconnected+" servers indicated "+url+" resolved with DNS: "+resolvedto
     response += "\n\n"+httpup+"/"+serverconnected+" servers indicated "+url+" is up."
-    response += "\n\n"+footerGen(mention.permalink)
+    response += "\n\n"+footerGen(mention.permalink)+" ^I ^contacted ^servers: "+serverids
     return response
 
 def footerGen(permalink):
-    return '[report a mistake](http://www.reddit.com/message/compose/?to=chpwssn&subject=IsItUpBot%20Error%20Report&message='+permalink+')'
+    return '[^report ^a ^mistake](http://www.reddit.com/message/compose/?to=chpwssn&subject=IsItUpBot%20Error%20Report&message='+permalink+')'
 
 
 r = praw.Reddit('ChemBot v2.0 by u/chpwssn. Responds to username mentions with information on chemical compounds listed in the comment.')
