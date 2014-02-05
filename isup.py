@@ -41,7 +41,7 @@ def runcheck(url):
     response +="\n\nOf the "+serverstried+" servers tried, I connected to "+serverconnected+". They were located in: "+servercities
     response += "\n\n"+dnsresolve+"/"+serverconnected+" servers indicated "+url+" resolved with DNS"
     response += "\n\n"+httpup+"/"+serverconnected+" servers indicated "+url+" is up."
-    response += "\n\n"+footerGen()
+    response += "\n\n"+footerGen(mention.permalink)
     return response
 
 def footerGen(permalink):
