@@ -1,6 +1,10 @@
 from specifics import *
-import urllib,urllib2,json
-urltocheck = "b-15.net http://google.com"
+import urllib
+import urllib2
+import json
+import praw
+import time
+urltocheck = "b-15.net http://google.com http://151.236.29.11 https://151.236.29.11"
 
 def runcheck(url):
     serverstried = 0
@@ -19,7 +23,7 @@ def runcheck(url):
             page = response.read()
             j = json.loads(page)
             if j:
-                servercities += " "+j['city']+", "+j['country']
+                servercities += " "+j['city']+", "+j['country']+"."
                 serverconnected += 1
                 if j['http'] == 200:
                     httpup += 1
@@ -32,10 +36,44 @@ def runcheck(url):
     serverconnected = str(serverconnected)
     dnsresolve = str(dnsresolve)
     httpup = str(httpup)
-    print "\nResults:"
-    print "Of the "+serverstried+" servers tried, I connected to "+serverconnected+" they were located in: "+servercities
-    print dnsresolve+"/"+serverconnected+" servers indicated "+url+" resolved with DNS"
-    print httpup+"/"+serverconnected+" servers indicated "+url+" responded with a 200 message."
+    response = ""
+    response += "Hello! I\'m the IsItUpBot!\n\nResults:"
+    response +="\n\nOf the "+serverstried+" servers tried, I connected to "+serverconnected+". They were located in: "+servercities
+    response += "\n\n"+dnsresolve+"/"+serverconnected+" servers indicated "+url+" resolved with DNS"
+    response += "\n\n"+httpup+"/"+serverconnected+" servers indicated "+url+" is up."
+    response += "\n\n"+footerGen()
+    return response
 
-for word in urltocheck.split():
-    runcheck(word)
+def footerGen(permalink):
+    return '[report a mistake](http://www.reddit.com/message/compose/?to=chpwssn&subject=IsItUpBot%20Error%20Report&message='+permalink+')'
+
+
+r = praw.Reddit('ChemBot v2.0 by u/chpwssn. Responds to username mentions with information on chemical compounds listed in the comment.')
+r.login(botuser,botpass)
+#Open the file used to keep track of the mentions we've already scanned for words
+with open("isitupbotscanned.txt") as scannedfile:
+    scanned = scannedfile.read().splitlines()
+print scanned
+done_this_time = set()
+loop = True
+loops = 0
+while loop:
+    loops += 1
+    if loops%100 == 0:
+        print "Done "+str(loops)+" loops, completed: "+str(done_this_time)
+    #Get the username mentions we have in our inbox
+    mentions = r.get_mentions()
+    for mention in mentions:
+        #If we haven't scanned the mention yet previously or in this time running the script
+        if mention.id not in scanned and mention.id not in done_this_time:
+            #Record the mention as scanned in the file and the set
+            with open("isitupbotscanned.txt", "a") as scannedfile:
+                scannedfile.write(mention.id+'\n')
+                done_this_time.add(mention.id)
+            print mention
+            print mention.id
+            words = mention.body.split()
+            for word in words:
+                if word.lower() != "/u/isitupbot":
+                    mention.reply(runcheck(word))
+    time.sleep(2)
