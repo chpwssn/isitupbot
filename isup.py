@@ -54,7 +54,7 @@ def footerGen(permalink):
     return '[^report ^a ^mistake](http://www.reddit.com/message/compose/?to=chpwssn&subject=IsItUpBot%20Error%20Report&message='+permalink+') ^| [^more ^info](http://www.reddit.com/r/IsItUpBot/wiki/index)'
 
 
-r = praw.Reddit('ChemBot v2.0 by u/chpwssn. Responds to username mentions with information on chemical compounds listed in the comment.')
+r = praw.Reddit('IsItUpBot v1.5 by /u/chpwssn. This bot, when summoned, will attempt to connect to the domains/IPs listed in the comment. Useful for seeing if a site is down for everyone or just you.')
 r.login(botuser,botpass)
 #Open the file used to keep track of the mentions we've already scanned for words
 with open("isitupbotscanned.txt") as scannedfile:
