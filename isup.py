@@ -43,7 +43,7 @@ def runcheck(url):
     dnsresolve = str(dnsresolve)
     httpup = str(httpup)
     response = ""
-    response += "Hello! I\'m the IsItUpBot!\n\nResults:"
+    response += "Hello! I\'m the IsItUpBot!\n\nResults for **"+url+"**:"
     response +="\n\nOf the "+serverstried+" servers tried, I connected to "+serverconnected+". They were located in: "+servercities
     response += "\n\n"+dnsresolve+"/"+serverconnected+" servers indicated "+url+" resolved with DNS: "+resolvedto
     response += "\n\n"+httpup+"/"+serverconnected+" servers indicated "+url+" is up."
