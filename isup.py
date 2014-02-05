@@ -1,6 +1,6 @@
 from specifics import *
 import urllib,urllib2,json
-urltocheck = "b-15.net"
+urltocheck = "b-15.net http://google.com"
 
 def runcheck(url):
     serverstried = 0
@@ -12,7 +12,7 @@ def runcheck(url):
     for server in servers:
         serverstried += 1
         try:
-            data = {"url": urltocheck,"api":apikey}
+            data = {"url": url,"api":apikey}
             data = urllib.urlencode(data)
             request = urllib2.Request(server + '?' + data)
             response = urllib2.urlopen(request)
@@ -21,7 +21,6 @@ def runcheck(url):
             if j:
                 servercities += " "+j['city']+", "+j['country']
                 serverconnected += 1
-                print j
                 if j['http'] == 200:
                     httpup += 1
                 if j['dns'] == True:
@@ -33,9 +32,10 @@ def runcheck(url):
     serverconnected = str(serverconnected)
     dnsresolve = str(dnsresolve)
     httpup = str(httpup)
-    print "Results:"
+    print "\nResults:"
     print "Of the "+serverstried+" servers tried, I connected to "+serverconnected+" they were located in: "+servercities
-    print dnsresolve+"/"+serverconnected+" servers indicated "+urltocheck+" resolved with DNS"
-    print httpup+"/"+serverconnected+" servers indicated "+urltocheck+" responded with a 200 message."
+    print dnsresolve+"/"+serverconnected+" servers indicated "+url+" resolved with DNS"
+    print httpup+"/"+serverconnected+" servers indicated "+url+" responded with a 200 message."
 
-runcheck(urltocheck)
+for word in urltocheck.split():
+    runcheck(word)

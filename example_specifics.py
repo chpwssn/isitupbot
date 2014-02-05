@@ -1,0 +1,2 @@
+apikey = "MYAPIKEY"
+servers = set([])
